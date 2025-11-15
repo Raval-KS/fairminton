@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badminton Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>🏸 Badminton Manager</h1>
+
+        <div id="addPlayerCard" class="card">
+            <h3>Add Player</h3>
+            <div class="input-group">
+                <input type="text" id="playerName" placeholder="Name">
+                <select id="playerSkill">
+                    <option value="1">Okay-ish ⭐</option>
+                    <option value="2">Mid ⭐⭐</option>
+                    <option value="3">Solid ⭐⭐⭐</option>
+                </select>
+                <button id="addPlayerBtn">Add</button>
+            </div>
+            <ul id="rosterList"></ul>
+        </div>
+
+        <div id="setupSection">
+            <div class="card">
+                <h3>Settings</h3>
+                <div class="input-group">
+                    <select id="gameMode"><option value="doubles">Doubles</option><option value="singles">Singles</option></select>
+                    <select id="gameStyle"><option value="customised">Fair Play (Queue)</option><option value="tournament">Tournament (Bracket)</option></select>
+                </div>
+
+                <div class="sliders-container" style="margin-top:15px; padding-top:15px; border-top:1px solid #e2e8f0; margin-bottom: 20px;">
+                    <label style="font-size:0.8rem; font-weight:bold; color:var(--text-muted); display:block; margin-bottom:10px;">⚖️ ALGORITHM TUNING</label>
+                    <div style="margin-bottom:15px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:500; margin-bottom:5px;">
+                            <span>Skill Balance</span> <span id="valSkill" style="color:var(--primary)">8</span>
+                        </div>
+                        <input type="range" id="weightSkill" min="0" max="50" value="8" oninput="document.getElementById('valSkill').innerText=this.value" style="width:100%; cursor:pointer;">
+                    </div>
+                    <div style="margin-bottom:15px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:500; margin-bottom:5px;">
+                            <span>Partner Diversity</span> <span id="valPartner" style="color:var(--primary)">20</span>
+                        </div>
+                        <input type="range" id="weightPartner" min="0" max="100" value="20" oninput="document.getElementById('valPartner').innerText=this.value" style="width:100%; cursor:pointer;">
+                    </div>
+                    <div style="margin-bottom:5px;">
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:500; margin-bottom:5px;">
+                            <span>Opponent Diversity</span> <span id="valOpponent" style="color:var(--primary)">5</span>
+                        </div>
+                        <input type="range" id="weightOpponent" min="0" max="50" value="5" oninput="document.getElementById('valOpponent').innerText=this.value" style="width:100%; cursor:pointer;">
+                    </div>
+                </div>
+                <button id="startGameBtn" class="primary-btn">START</button>
+            </div>
+        </div>
+
+        <div id="gameSection" class="hidden">
+            <div id="tournamentBracketView" class="hidden">
+                <h3>🏆 Bracket</h3>
+                <div id="bracketContainer"></div>
+            </div>
+
+            <div class="card match-card">
+                <h2>🏸 Current Match</h2>
+                <div class="match-display">
+                    <div class="team" id="teamA-area"></div>
+                    <div class="vs">VS</div>
+                    <div class="team" id="teamB-area"></div>
+                </div>
+                <div class="score-area">
+                    <div class="score-box"><label>Team A</label><input type="number" id="scoreA"></div>
+                    <div class="score-box"><label>Team B</label><input type="number" id="scoreB"></div>
+                </div>
+                
+                <div class="button-group" style="display:flex; flex-direction:column; gap:10px; margin-top:15px;">
+                    <button id="recordMatchBtn" class="win-btn">Record Result</button>
+                    <button id="undoBtn" class="secondary-btn" style="background:#f1f5f9; color:#475569;" disabled>Undo Last Match</button>
+                    <button id="endGameBtn" style="background:#ef4444; color:white;">End Session</button>
+                </div>
+            </div>
+
+            <div id="queueSection" class="card queue-box">
+                <h3>🕒 Queue</h3>
+                <div id="waitingQueueDisplay"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="tab-container">
+                <button class="tab-btn active" onclick="switchTab('leaderboard')">Leaderboard</button> <button class="tab-btn" onclick="switchTab('player-stats')">Player Stats</button> <button class="tab-btn" onclick="switchTab('history')">History</button>
+                <button class="tab-btn" onclick="switchTab('partners')">Partners</button>
+                <button class="tab-btn" onclick="switchTab('opponents')">Opponents</button>
+                <button class="tab-btn" onclick="switchTab('summary')">Summary</button>
+            </div>
+
+            <div id="leaderboard-tab" class="tab-content active">
+                <table id="leaderboardTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Wins</th>
+                            <th>Matches</th>
+                            <th>Win %</th> </tr>
+                    </thead>
+                    <tbody id="leaderbody"></tbody> </table>
+            </div>
+
+            <div id="player-stats-tab" class="tab-content">
+                <table id="playerStatsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Best Partner</th>
+                            <th>Nemesis</th>
+                        </tr>
+                    </thead>
+                    <tbody id="playerStatsBody"></tbody>
+                </table>
+            </div>
+
+            <div id="history-tab" class="tab-content"><div id="matchHistoryList"></div></div>
+            <div id="partners-tab" class="tab-content"><div id="partnershipMatrix"></div></div>
+            <div id="opponents-tab" class="tab-content"><div id="opponentMatrix"></div></div>
+            <div id="summary-tab" class="tab-content"><div id="statsSummary" class="stats-summary"></div></div>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
